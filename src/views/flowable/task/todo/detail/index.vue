@@ -520,12 +520,24 @@ export default {
         });
       } else {
         // 流程设计人员类型配置为固定人员接收任务时,直接提交任务到下一步
+        let staffCode = this.taskForm.master;
+        let obj = {};
+        if (staffCode) {
+          obj = this.masterList.filter((item) => {
+            return item.staffCode == staffCode;
+          })[0];
+        }
+        // 流程设计人员类型配置为固定人员接收任务时,直接提交任务到下一步
         const params = {
           taskId: this.taskForm.taskId,
-          master: this.taskForm.master,
+          master: obj,
+        };
+        const data = {
+          ...this.taskForm,
+          master: obj,
         };
         getNextFlowNode(params).then((res) => {
-          complete(this.taskForm).then((response) => {
+          complete(data).then((response) => {
             this.$modal.msgSuccess(response.msg);
             this.goBack();
           });
